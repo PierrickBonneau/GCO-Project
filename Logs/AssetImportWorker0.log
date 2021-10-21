@@ -1422,3 +1422,4 @@ Received Import Request.
 Start importing Assets/ExampleAssets/Doge PROG/GameUI.prefab using Guid(4e65e608f3a5ca045a1fbabb29e884e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '62ea5148fb80dc165ee43739ac22294f') in 0.055046 seconds 
   Import took 0.061121 seconds .
 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
