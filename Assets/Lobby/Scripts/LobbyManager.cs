@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,26 +15,44 @@ public class LobbyManager : MonoBehaviourPunCallbacks {
     /// </summary>
     [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players")]
     [SerializeField]
-    private byte maxPlayersPerRoom = 2;
+    private byte maxPlayersPerRoom = 4;
+
+    [Tooltip("The Ui Panel to let the user enter name, connect and play")]
+    [SerializeField]
+    private GameObject mainMenuPanel;
+
+    [Tooltip("The UI Label to inform the user that the connection is in progress")]
+    [SerializeField]
+    private GameObject progressLabel;
+
+    [Tooltip("The pre-game UI Panel that gives all the infos about the current room")]
+    [SerializeField]
+    private GameObject preGamePanel;
+
+    [SerializeField]
+    private GameObject playerPanel1;
+
+    [SerializeField]
+    private GameObject playerPanel2;
+
+    [SerializeField]
+    private GameObject playerPanel3;
+
+    [SerializeField]
+    private GameObject playerPanel4;
+
 
     #endregion
 
 
     #region Private Fields
-    
+
     private readonly string gameVersion = "1";
 
     #endregion
 
     #region Public Fields
 
-    [Tooltip("The Ui Panel to let the user enter name, connect and play")]
-    [SerializeField]
-    private GameObject controlPanel;
-
-    [Tooltip("The UI Label to inform the user that the connection is in progress")]
-    [SerializeField]
-    private GameObject progressLabel;
 
     #endregion
 
@@ -47,7 +66,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks {
     // Start is called before the first frame update
     public void Start() {
         progressLabel.SetActive(false);
-        controlPanel.SetActive(true);
+        mainMenuPanel.SetActive(true);
+        preGamePanel.SetActive(false);
     }
 
     #endregion
@@ -56,8 +76,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks {
 
     public void Connect() {
 
+        mainMenuPanel.SetActive(false);
         progressLabel.SetActive(true);
-        controlPanel.SetActive(false);
+        preGamePanel.SetActive(false);
 
         if (PhotonNetwork.IsConnected) {
 
@@ -71,15 +92,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks {
 
     }
 
-
-
-  
-
     #endregion
 
     #region Private Methods
 
-    // TODO à déplacer dans une classe utilitaire
+    // get the room selected by the player in the start menu
     private string GetPlayerRoomNamePref() {
 
         if (PlayerPrefs.HasKey(PrefKeys.PLAYER_ROOM_NAME_PREF_KEY)) {
@@ -87,6 +104,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks {
         } else {
             return string.Empty;
         }
+    }
+
+    private bool IsRoomFull() {
+        return PhotonNetwork.CurrentRoom.PlayerCount == maxPlayersPerRoom;
+    }
+
+    private void StartGame() {
+
+            Debug.Log("Tous les joueurs sont là, la partie peut commencer !");
+            PhotonNetwork.LoadLevel("Room 1");
     }
 
 
@@ -117,31 +144,49 @@ public class LobbyManager : MonoBehaviourPunCallbacks {
         Debug.LogWarningFormat("OnDisconnected() was called by PUN with reason {0}", cause);
 
         progressLabel.SetActive(false);
-        controlPanel.SetActive(true);
+        mainMenuPanel.SetActive(true);
     }
 
     public override void OnJoinedRoom() {
 
+        preGamePanel.SetActive(true);
+        progressLabel.SetActive(false);
+
         Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room.");
 
-        if (PhotonNetwork.PlayerListOthers.Length != 0) {
+        Player[] otherPlayers = PhotonNetwork.PlayerListOthers;
 
-            Debug.Log("Les autres joueurs présents sont :");
+        playerPanel1.GetComponentInChildren<Text>().text = PhotonNetwork.NickName;
 
-            foreach(Player player in PhotonNetwork.PlayerListOthers) {
-                Debug.Log(player.NickName +"\n");
-            }
+        try {
+            if (otherPlayers[0] != null)
+                playerPanel2.GetComponentInChildren<Text>().text = otherPlayers[0].NickName;
 
-        } else {
-            Debug.Log("Il n'y a aucun autre joueurs dans cette Room actuellement");
+            if (otherPlayers[1] != null)
+                playerPanel3.GetComponentInChildren<Text>().text = otherPlayers[1].NickName;
+
+            if (otherPlayers[2] != null)
+                playerPanel4.GetComponentInChildren<Text>().text = otherPlayers[2].NickName;
+        } catch(IndexOutOfRangeException e) {
+
         }
+
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer) {
 
-        if (PhotonNetwork.PlayerList.Length == maxPlayersPerRoom) {
+        int othersPlayersCount = PhotonNetwork.PlayerListOthers.Length;
 
+        if (othersPlayersCount == 0) {
+            playerPanel1.GetComponentInChildren<Text>().text = newPlayer.NickName;
+        } else if (othersPlayersCount == 1) {
+            playerPanel2.GetComponentInChildren<Text>().text = newPlayer.NickName;
+        } else if (othersPlayersCount == 2) {
+            playerPanel3.GetComponentInChildren<Text>().text = newPlayer.NickName;
+        } else if (othersPlayersCount == 3) {
+            playerPanel4.GetComponentInChildren<Text>().text = newPlayer.NickName;
         }
+
     }
 
     #endregion

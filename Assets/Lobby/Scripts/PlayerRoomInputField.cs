@@ -8,8 +8,6 @@ public class PlayerRoomInputField : MonoBehaviour {
 
     #region Private Constants
 
-    
-
     #endregion
 
 
@@ -21,7 +19,8 @@ public class PlayerRoomInputField : MonoBehaviour {
 
     // Start is called before the first frame update
     public void Start() {
-
+        
+        /*
         string defaultName = string.Empty;
         InputField inputField = GetComponent<InputField>();
 
@@ -31,6 +30,7 @@ public class PlayerRoomInputField : MonoBehaviour {
                 inputField.text = defaultName;
             }
         }
+        */
 
     }
 
@@ -41,7 +41,7 @@ public class PlayerRoomInputField : MonoBehaviour {
     /// <summary>
     /// Sets the room's name of the player, and save it in the PlayerPrefs for future sessions.
     /// </summary>
-    /// <param name="value">The name of the Player</param>
+    /// <param name="value">The name of the room</param>
 
     public void SetPlayerRoomName(string value) {
 

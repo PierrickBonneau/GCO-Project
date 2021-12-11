@@ -25,6 +25,7 @@ public class PlayerNameInputField : MonoBehaviour {
     // Start is called before the first frame update
     public void Start() {
 
+        /*
         string defaultName = string.Empty;
         InputField inputField = GetComponent<InputField>();
 
@@ -37,6 +38,7 @@ public class PlayerNameInputField : MonoBehaviour {
         }
 
         PhotonNetwork.NickName = defaultName;
+        */
     }
 
     #endregion
