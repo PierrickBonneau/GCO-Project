@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum CURRENTCOLOR
+{
+    RED,
+    BLU,
+    GREEN,
+    YELLOW
+};
 public class RotateOnClick : MonoBehaviour
 {
-    public enum CURRENTCOLOR
-    {
-        RED,
-        BLU,
-        GREEN,
-        YELLOW
-    };
+    
     [SerializeField] AnimationCurve curve;
     bool isRotating = false;
-    CURRENTCOLOR curentColor = CURRENTCOLOR.RED;
+    [HideInInspector] public CURRENTCOLOR curentColor = CURRENTCOLOR.RED;
     float rotationTimer = 0;
+    Vector3 startingRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +25,7 @@ public class RotateOnClick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isRotating && PlayerPrefs.GetInt("RayonVertWon", 0) == 0)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
@@ -34,12 +35,13 @@ public class RotateOnClick : MonoBehaviour
             {
                 isRotating = true;
                 rotationTimer = 0;
+                startingRotation = transform.rotation.eulerAngles;
             }
         }
         if (isRotating && rotationTimer <= curve.length)
         {
             rotationTimer += Time.deltaTime;
-            transform.rotation.SetEulerAngles(transform.rotation.x, transform.rotation.y, transform.rotation.z + (curve.Evaluate(rotationTimer) * Time.deltaTime));
+            gameObject.transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, startingRotation.z + curve.Evaluate(rotationTimer) * - 90);
             if (rotationTimer > curve.length)
             {
                 isRotating = false;
@@ -58,6 +60,7 @@ public class RotateOnClick : MonoBehaviour
                         curentColor = CURRENTCOLOR.GREEN;
                         break;
                 }
+                Debug.Log(curentColor);
             }
         }
     }
