@@ -504,10 +504,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ListAnneaux:
-  - {fileID: 1108474794}
-  - {fileID: 978447312}
-  - {fileID: 732022480}
   - {fileID: 499263125}
+  - {fileID: 732022480}
+  - {fileID: 978447312}
+  - {fileID: 1108474794}
   colorNeeded: 03000000010000000000000002000000
 --- !u!114 &978447312 stripped
 MonoBehaviour:
